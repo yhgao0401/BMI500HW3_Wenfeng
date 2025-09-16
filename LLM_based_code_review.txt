@@ -1,0 +1,36 @@
+1. Consistency
+	•	Naming is inconsistent:
+	◦	calculate_leibniz_sum uses snake_case, but later you have leibniz_a, leibniz_b, etc. (okay for demos, but inconsistent with the first one).
+	◦	Sometimes you use total, sometimes total_sum.
+	◦	Consider using a uniform pattern: e.g., leibniz_method_a, leibniz_method_b, etc.
+	•	Docstrings: Some functions lack descriptions. A consistent docstring format (Google-style or NumPy-style) would help.
+2. Clarity
+	•	Problem statements (Problem 1..., Problem 2...) are embedded as plain text in the script. That makes the code harder to parse. Prefer using comments (#) or docstrings rather than free text in a script.
+	•	Some methods (leibniz_d, leibniz_e) are misleading:
+	◦	Set: Sets are unordered and cannot store duplicate values. Using a set here discards terms if they repeat (which can happen in floating point approximations). This makes the function mathematically wrong (though error may still be small by accident).
+	◦	Dict: While valid, it adds no mathematical or performance advantage over a list, and just increases complexity. Needs a clarifying comment that it’s for demonstration only.
+	•	compare_implementations returns a dictionary with timing and error, but fastest and most_accurate are computed outside and printed — better to encapsulate all reporting inside the function.
+3. Correctness
+	•	leibniz_j:
+	◦	Correctly combines terms pairwise, but it ignores the last term if n is odd. This should be documented (or you could handle the last unpaired term explicitly).
+	•	leibniz_d (set-based):
+	◦	Incorrect due to set deduplication (if two terms are equal due to floating-point rounding, they’ll be lost). This is not a mathematically valid implementation.
+	•	Benchmarking (compare_implementations) uses np.pi / 4 as reference — correct for the series, but should be commented so readers understand why not math.pi.
+4. Performance
+	•	leibniz_c (list + sum) and leibniz_e (dict + values) are memory-inefficient compared to simple accumulation. They exist for educational reasons, but you might want to note that explicitly.
+	•	leibniz_f is the best approach, as identified — NumPy vectorization wins here.
+	•	compare_implementations:
+	◦	Using time.time() for timing is coarse. Prefer time.perf_counter() or %timeit in Jupyter.
+	◦	Running each function only once can give noisy results; better to average over multiple runs.
+5. Maintainability
+	•	Magic numbers: 1000000 in compare_implementations and 100000 in calculate_errors should be parameters or constants defined at the top.
+	•	Mixed use of math.pi and np.pi. Stick with one library for consistency.
+	•	Results printing is hardcoded — could be made more flexible (e.g., accept a logger or return a structured report).
+6. Style
+	•	PEP8 compliance:
+	◦	Indentation and spacing are mostly fine.
+	◦	Function names should all be snake_case.
+	◦	Constants (like max_n=100000) could be written as MAX_N = 100_000 at the top for readability.
+	•	Plotting:
+	◦	plt.figure(figsize=(2, 2)) is a bit small for practical reading; figsize=(4, 3) or (5, 4) is usually better.
+	◦	Titles/labels are readable but font sizes could be made slightly larger for presentations.
